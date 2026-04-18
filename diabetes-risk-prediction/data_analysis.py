@@ -257,3 +257,66 @@ print(f"\n   Testing set class distribution:")
 print(f"   • Non-Diabetic : {(y_test == 0).sum()} ({(y_test == 0).sum()/len(y_test)*100:.1f}%)")
 print(f"   • Diabetic     : {(y_test == 1).sum()} ({(y_test == 1).sum()/len(y_test)*100:.1f}%)")
 
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 10 — SAVE SCALER FOR MODEL TRAINING          │
+# └─────────────────────────────────────────────────────────┘
+
+import pickle
+
+print("\n" + "="*60)
+print("  SAVING SCALER & PREPROCESSED DATA")
+print("="*60)
+
+# Save the fitted scaler (needed later in model_training.py and app.py)
+with open("scaler.pkl", "wb") as f:
+    pickle.dump(scaler, f)
+
+print("\n Files Saved:")
+print("    scaler.pkl  → StandardScaler (for model training & web app)")
+
+# Also save the processed data splits for later use (optional but helpful)
+import os
+if not os.path.exists("data"):
+    os.makedirs("data")
+
+# Save train/test splits
+with open("data/X_train.pkl", "wb") as f:
+    pickle.dump(X_train, f)
+with open("data/X_test.pkl", "wb") as f:
+    pickle.dump(X_test, f)
+with open("data/y_train.pkl", "wb") as f:
+    pickle.dump(y_train, f)
+with open("data/y_test.pkl", "wb") as f:
+    pickle.dump(y_test, f)
+
+print("   ✓ data/X_train.pkl → Training features (614 samples)")
+print("   ✓ data/X_test.pkl  → Testing features (154 samples)")
+print("   ✓ data/y_train.pkl → Training labels")
+print("   ✓ data/y_test.pkl  → Testing labels")
+
+
+
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 11 — QUICK PREDICTION TEST                    │
+# └─────────────────────────────────────────────────────────┘
+
+print("\n" + "="*60)
+print("  QUICK PREDICTION TEST")
+print("="*60)
+
+# Test: Create a sample patient and see if preprocessing works
+sample_patient = np.array([[6, 148, 72, 35, 0, 33.6, 0.627, 50]])
+# Features: Pregnancies, Glucose, BloodPressure, SkinThickness, 
+#           Insulin, BMI, DiabetesPedigreeFunction, Age
+
+sample_scaled = scaler.transform(sample_patient)
+
+print("\n Sample Patient Test:")
+print(f"   Input (raw)     : {sample_patient[0]}")
+print(f"   After scaling   : {sample_scaled[0]}")
+print(f"    Scaling works correctly!")
+
+print("\n" + "="*60)
+print("   DATA PREPROCESSING COMPLETE!")
+print("="*60)
+print("="*60)

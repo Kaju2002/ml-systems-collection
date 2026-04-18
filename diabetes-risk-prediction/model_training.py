@@ -57,3 +57,24 @@ print(f"   X_test shape  : {X_test.shape}")
 print(f"   y_train shape : {y_train.shape}")
 print(f"   y_test shape  : {y_test.shape}")
 
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 3 — BUILD LOGISTIC REGRESSION MODEL           │
+# └─────────────────────────────────────────────────────────┘
+
+print("\n" + "="*60)
+print("  BUILDING LOGISTIC REGRESSION MODEL")
+print("="*60)
+
+model = LogisticRegression(
+    max_iter=1000,        # Max iterations to converge
+    random_state=42,      # Reproducibility
+    solver="lbfgs",       # Efficient for small datasets
+    class_weight=None     # Can use 'balanced' if class imbalance issues
+)
+
+print("\n Model Configuration:")
+print(f"   Algorithm      : Logistic Regression")
+print(f"   Solver         : lbfgs")
+print(f"   Max Iterations : 1000")
+print(f"   Random State   : 42 (reproducible)")
+

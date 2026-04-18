@@ -78,3 +78,25 @@ print(f"   Solver         : lbfgs")
 print(f"   Max Iterations : 1000")
 print(f"   Random State   : 42 (reproducible)")
 
+
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 4 — TRAIN THE MODEL                           │
+# └─────────────────────────────────────────────────────────┘
+
+print("\n" + "="*60)
+print("  TRAINING MODEL ON TRAINING DATA")
+print("="*60)
+
+model.fit(X_train, y_train)
+
+print(f"\n Model trained successfully!")
+print(f"   Bias (Intercept)    : {model.intercept_[0]:.4f}")
+print(f"\n Feature Coefficients (weights):")
+print(f"   (Positive = increases risk, Negative = decreases risk)")
+
+coef_df = pd.DataFrame({
+    "Feature"     : X_train.columns,
+    "Coefficient" : model.coef_[0]
+}).sort_values("Coefficient", ascending=False)
+
+print(coef_df.to_string(index=False))

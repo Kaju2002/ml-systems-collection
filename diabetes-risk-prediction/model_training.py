@@ -100,3 +100,21 @@ coef_df = pd.DataFrame({
 }).sort_values("Coefficient", ascending=False)
 
 print(coef_df.to_string(index=False))
+
+
+
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 5 — MAKE PREDICTIONS ON TEST SET              │
+# └─────────────────────────────────────────────────────────┘
+
+print("\n" + "="*60)
+print("  GENERATING PREDICTIONS ON TEST SET")
+print("="*60)
+
+y_pred = model.predict(X_test)                              # Class labels (0 or 1)
+y_pred_proba = model.predict_proba(X_test)[:, 1]           # Probability of class 1
+
+print(f"\n✓ Predictions generated!")
+print(f"   Sample predictions (first 10):")
+for i in range(10):
+    print(f"      Test sample {i+1} → Predicted: {y_pred[i]}, Probability: {y_pred_proba[i]:.2%}")

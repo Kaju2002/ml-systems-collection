@@ -155,3 +155,35 @@ print("\n    What does the heatmap show?")
 print("      • Dark red   = Strong positive correlation")
 print("      • Dark blue  = Strong negative correlation")
 print("      • White      = No correlation")
+
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 7 — DATA PREPROCESSING (HANDLE ZEROS)         │
+# └─────────────────────────────────────────────────────────┘
+
+print("\n" + "="*60)
+print(" DATA PREPROCESSING ")
+print("="*60)
+
+df_clean = df.copy()
+
+print("\n  Replacing impossible zeros with MEDIAN values...")
+
+# Replace zeros with median for each column
+for col in zero_columns:
+    # Count zeros before replacement
+    zero_before = (df_clean[col] == 0).sum()
+    
+    # Calculate median (ignoring the zeros)
+    median_val = df_clean[col].replace(0, np.nan).median()
+    
+    # Replace zeros with median
+    df_clean[col] = df_clean[col].replace(0, median_val)
+    
+    # Count zeros after replacement
+    zero_after = (df_clean[col] == 0).sum()
+    
+    print(f"   {col:>16} → {zero_before:>3} zeros replaced with median={median_val:>6.2f}")
+
+print("\n   All impossible zeros replaced!")
+
+

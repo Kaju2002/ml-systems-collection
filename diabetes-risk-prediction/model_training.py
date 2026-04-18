@@ -66,10 +66,10 @@ print("  BUILDING LOGISTIC REGRESSION MODEL")
 print("="*60)
 
 model = LogisticRegression(
-    max_iter=1000,        # Max iterations to converge
-    random_state=42,      # Reproducibility
-    solver="lbfgs",       # Efficient for small datasets
-    class_weight=None     # Can use 'balanced' if class imbalance issues
+    max_iter=1000,
+    random_state=42,
+    solver="lbfgs",
+    class_weight="balanced"  
 )
 
 print("\n Model Configuration:")
@@ -118,3 +118,85 @@ print(f"\n✓ Predictions generated!")
 print(f"   Sample predictions (first 10):")
 for i in range(10):
     print(f"      Test sample {i+1} → Predicted: {y_pred[i]}, Probability: {y_pred_proba[i]:.2%}")
+
+
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 5B — ADJUSTED PREDICTIONS WITH LOWER THRESHOLD│
+# └─────────────────────────────────────────────────────────┘
+
+# Default: 0.5 threshold
+# Custom: 0.4 threshold (predict diabetic if probability > 0.4)
+
+custom_threshold = 0.4
+y_pred_custom = (y_pred_proba >= custom_threshold).astype(int)
+
+print("\n" + "="*60)
+print("  THRESHOLD ADJUSTMENT TEST")
+print("="*60)
+
+from sklearn.metrics import confusion_matrix as cm_func
+
+cm_custom = cm_func(y_test, y_pred_custom)
+tn_c, fp_c, fn_c, tp_c = cm_custom.ravel()
+
+print(f"\nWith Threshold = 0.4:")
+print(f"   True Positives (TP)   : {tp_c}  (caught diabetic)")
+print(f"   False Negatives (FN)  : {fn_c}  (missed diabetic) ↓ LOWER")
+print(f"   False Positives (FP)  : {fp_c}  (false alarm) ↑ HIGHER")
+
+accuracy_custom = (tp_c + tn_c) / (tp_c + tn_c + fp_c + fn_c)
+print(f"   Accuracy : {accuracy_custom * 100:.2f}%")
+
+
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 6 — CALCULATE EVALUATION METRICS              │
+# └─────────────────────────────────────────────────────────┘
+
+print("\n" + "="*60)
+print("  MODEL EVALUATION METRICS")
+print("="*60)
+
+accuracy = accuracy_score(y_test, y_pred)
+roc_auc = roc_auc_score(y_test, y_pred_proba)
+
+print(f"\n Key Performance Metrics:")
+print(f"   Accuracy  : {accuracy * 100:.2f}%   (How many predictions correct)")
+print(f"   ROC-AUC   : {roc_auc:.4f}     (0.5=random, 1.0=perfect)")
+
+print(f"\n Detailed Classification Report:")
+print(classification_report(
+    y_test, y_pred,
+    target_names=["Non-Diabetic (0)", "Diabetic (1)"],
+    digits=4
+))
+
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+tn, fp, fn, tp = cm.ravel()
+
+print(f"\n Confusion Matrix Breakdown:")
+print(f"   True Negatives  (TN)  : {tn}  (Correctly predicted healthy)")
+print(f"   False Positives (FP)  : {fp}  (Incorrectly predicted diabetic)")
+print(f"   False Negatives (FN)  : {fn}  (Incorrectly predicted healthy)")
+print(f"   True Positives  (TP)  : {tp}  (Correctly predicted diabetic)")
+
+
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 7 — PLOT 1: CONFUSION MATRIX                 │
+# └─────────────────────────────────────────────────────────┘
+
+print("\n" + "="*60)
+print("  CREATING VISUALIZATIONS")
+print("="*60)
+
+fig, ax = plt.subplots(figsize=(7, 5))
+disp = ConfusionMatrixDisplay(
+    confusion_matrix=cm,
+    display_labels=["Non-Diabetic", "Diabetic"]
+)
+disp.plot(ax=ax, cmap="Blues", colorbar=True)
+plt.title("Confusion Matrix — Diabetes Prediction", fontsize=13, fontweight="bold")
+plt.tight_layout()
+plt.savefig("plot_4_confusion_matrix.png", dpi=150, bbox_inches="tight")
+print("    Saved: plot_4_confusion_matrix.png")
+plt.close()

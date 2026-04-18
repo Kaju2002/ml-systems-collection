@@ -11,6 +11,7 @@
 import streamlit as st
 import numpy as np
 import pickle
+import os
 
 
 # ┌─────────────────────────────────────────────────────────┐
@@ -301,10 +302,15 @@ def load_artifacts():
     """
     Loads model.pkl and scaler.pkl only ONCE and caches them.
     Without @st.cache_resource, files reload on every interaction.
+    Uses absolute path relative to script location for cloud deployment.
     """
-    with open("model.pkl", "rb") as f:
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(script_dir, "model.pkl")
+    scaler_path = os.path.join(script_dir, "scaler.pkl")
+    
+    with open(model_path, "rb") as f:
         model = pickle.load(f)
-    with open("scaler.pkl", "rb") as f:
+    with open(scaler_path, "rb") as f:
         scaler = pickle.load(f)
     return model, scaler
 

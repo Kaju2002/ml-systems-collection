@@ -221,3 +221,39 @@ print(f"\n   Check: Scaled data stats")
 print(f"   • Mean : {X_scaled.mean().mean():.6f} (should be ~0)")
 print(f"   • Std  : {X_scaled.std().mean():.6f} (should be ~1)")
 
+
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 9 — TRAIN/TEST SPLIT                          │
+# └─────────────────────────────────────────────────────────┘
+
+from sklearn.model_selection import train_test_split
+
+print("\n" + "="*60)
+print("  TRAIN/TEST SPLIT (80/20)")
+print("="*60)
+
+print("\n Why split data?")
+print("   • Training set (80%): teach the model")
+print("   • Testing set (20%): evaluate performance")
+print("   • Tests on unseen data (real-world scenario)")
+print("   • Stratify: keeps class ratio in both sets")
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X_scaled, y,
+    test_size=0.20,
+    random_state=42,
+    stratify=y
+)
+
+print(f"\n   Total samples         : {len(X_scaled)}")
+print(f"   Training samples (80%): {len(X_train)}")
+print(f"   Testing samples (20%) : {len(X_test)}")
+
+print(f"\n   Training set class distribution:")
+print(f"   • Non-Diabetic : {(y_train == 0).sum()} ({(y_train == 0).sum()/len(y_train)*100:.1f}%)")
+print(f"   • Diabetic     : {(y_train == 1).sum()} ({(y_train == 1).sum()/len(y_train)*100:.1f}%)")
+
+print(f"\n   Testing set class distribution:")
+print(f"   • Non-Diabetic : {(y_test == 0).sum()} ({(y_test == 0).sum()/len(y_test)*100:.1f}%)")
+print(f"   • Diabetic     : {(y_test == 1).sum()} ({(y_test == 1).sum()/len(y_test)*100:.1f}%)")
+

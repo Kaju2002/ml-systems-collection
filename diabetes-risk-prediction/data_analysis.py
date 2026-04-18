@@ -81,5 +81,77 @@ for col in zero_columns:
     zero_pct = (zero_count / len(df)) * 100
     print(f"   {col:>16} → {zero_count:>3} zeros ({zero_pct:>5.1f}%) [IMPOSSIBLE!]")
 
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 4 — VISUALIZATION 1: TARGET DISTRIBUTION      │
+# └─────────────────────────────────────────────────────────┘
+
+print("\n" + "="*60)
+print("CREATING VISUALIZATIONS...")
+print("="*60)
+
+# Plot 1: Outcome Distribution (Bar Chart)
+plt.figure(figsize=(8, 5))
+colors = ["#4CAF50", "#F44336"]  # Green for healthy, red for diabetic
+sns.countplot(x="Outcome", data=df, palette=colors, hue="Outcome", legend=False)
+plt.title("Target Distribution: Healthy vs Diabetic", fontsize=14, fontweight="bold")
+plt.xlabel("Outcome", fontsize=12)
+plt.ylabel("Number of Patients", fontsize=12)
+plt.xticks([0, 1], ["Non-Diabetic (0)", "Diabetic (1)"])
+plt.grid(axis="y", alpha=0.3)
+plt.tight_layout()
+plt.savefig("plot_1_target_distribution.png", dpi=150, bbox_inches="tight")
+print("   Saved: plot_1_target_distribution.png")
+plt.close()
 
 
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 5 — VISUALIZATION 2: FEATURE DISTRIBUTIONS    │
+# └─────────────────────────────────────────────────────────┘
+
+# Plot 2: Feature Histograms (8 subplots)
+fig, axes = plt.subplots(2, 4, figsize=(15, 8))
+axes = axes.flatten()  # Flatten 2D array to 1D for easier iteration
+
+features = df.columns[:-1]  # All columns except "Outcome"
+
+for i, col in enumerate(features):
+    axes[i].hist(df[col], bins=25, color="#5C6BC0", edgecolor="white", alpha=0.7)
+    axes[i].set_title(col, fontsize=11, fontweight="bold")
+    axes[i].set_xlabel("Value")
+    axes[i].set_ylabel("Frequency")
+    axes[i].grid(axis="y", alpha=0.3)
+
+plt.suptitle("Feature Distributions (Histograms)", fontsize=14, fontweight="bold", y=1.00)
+plt.tight_layout()
+plt.savefig("plot_2_feature_distributions.png", dpi=150, bbox_inches="tight")
+print("   Saved: plot_2_feature_distributions.png")
+plt.close()
+
+
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 6 — VISUALIZATION 3: CORRELATION HEATMAP      │
+# └─────────────────────────────────────────────────────────┘
+
+# Plot 3: Correlation Matrix
+correlation_matrix = df.corr()
+
+plt.figure(figsize=(10, 8))
+sns.heatmap(
+    correlation_matrix,
+    annot=True,  # Show correlation values
+    fmt=".2f",   # 2 decimal places
+    cmap="coolwarm",  # Red/Blue color scheme
+    square=True,
+    linewidths=1,
+    cbar_kws={"label": "Correlation"}
+)
+plt.title("Feature Correlation Heatmap", fontsize=14, fontweight="bold")
+plt.tight_layout()
+plt.savefig("plot_3_correlation_heatmap.png", dpi=150, bbox_inches="tight")
+print("   Saved: plot_3_correlation_heatmap.png")
+plt.close()
+
+print("\n    What does the heatmap show?")
+print("      • Dark red   = Strong positive correlation")
+print("      • Dark blue  = Strong negative correlation")
+print("      • White      = No correlation")

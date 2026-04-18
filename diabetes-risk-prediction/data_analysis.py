@@ -186,4 +186,38 @@ for col in zero_columns:
 
 print("\n   All impossible zeros replaced!")
 
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 8 — STANDARD SCALING (Normalize Features)     │
+# └─────────────────────────────────────────────────────────┘
+
+from sklearn.preprocessing import StandardScaler
+
+print("\n" + "="*60)
+print("  FEATURE SCALING (StandardScaler)")
+print("="*60)
+
+print("\n Why scale features?")
+print("   • Logistic Regression is distance-based")
+print("   • Features with large values (e.g., Glucose) dominate")
+print("   • Scaling makes all features equal importance")
+print("   • Formula: (x - mean) / std_dev → mean=0, std=1")
+
+# Separate features (X) and target (y)
+X = df_clean.drop("Outcome", axis=1)
+y = df_clean["Outcome"]
+
+print(f"\n   X shape (features) : {X.shape}")
+print(f"   y shape (target)   : {y.shape}")
+
+# Initialize and fit scaler
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Convert back to DataFrame for easier handling
+X_scaled = pd.DataFrame(X_scaled, columns=X.columns)
+
+print("\n    Features scaled!")
+print(f"\n   Check: Scaled data stats")
+print(f"   • Mean : {X_scaled.mean().mean():.6f} (should be ~0)")
+print(f"   • Std  : {X_scaled.std().mean():.6f} (should be ~1)")
 

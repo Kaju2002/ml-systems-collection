@@ -200,3 +200,76 @@ plt.tight_layout()
 plt.savefig("plot_4_confusion_matrix.png", dpi=150, bbox_inches="tight")
 print("    Saved: plot_4_confusion_matrix.png")
 plt.close()
+
+
+
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 8 — PLOT 2: ROC CURVE                         │
+# └─────────────────────────────────────────────────────────┘
+
+fpr, tpr, thresholds = roc_curve(y_test, y_pred_proba)
+
+plt.figure(figsize=(8, 6))
+plt.plot(fpr, tpr, color="#1565C0", lw=2.5, label=f"ROC Curve (AUC = {roc_auc:.4f})")
+plt.plot([0, 1], [0, 1], color="red", linestyle="--", lw=2, label="Random Classifier (AUC = 0.5)")
+plt.xlabel("False Positive Rate (1 - Specificity)", fontsize=12)
+plt.ylabel("True Positive Rate (Sensitivity)", fontsize=12)
+plt.title("ROC Curve — Model Discrimination", fontsize=13, fontweight="bold")
+plt.legend(loc="lower right", fontsize=11)
+plt.grid(alpha=0.3)
+plt.tight_layout()
+plt.savefig("plot_5_roc_curve.png", dpi=150, bbox_inches="tight")
+print("    Saved: plot_5_roc_curve.png")
+plt.close()
+
+
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 9 — PLOT 3: FEATURE IMPORTANCE                │
+# └─────────────────────────────────────────────────────────┘
+
+# Sort coefficients for better visualization
+coef_sorted = coef_df.copy()
+colors = ["#F44336" if c > 0 else "#4CAF50" for c in coef_sorted["Coefficient"]]
+
+plt.figure(figsize=(10, 6))
+plt.barh(coef_sorted["Feature"], coef_sorted["Coefficient"], color=colors, edgecolor="black", alpha=0.7)
+plt.axvline(0, color="black", linewidth=1.2)
+plt.xlabel("Coefficient Value (Weight)", fontsize=12, fontweight="bold")
+plt.title("Feature Importance — Logistic Regression Coefficients", fontsize=13, fontweight="bold")
+plt.grid(axis="x", alpha=0.3)
+
+# Add legend
+from matplotlib.patches import Patch
+legend_elements = [Patch(facecolor="#F44336", alpha=0.7, label="Increases Diabetes Risk"),
+                   Patch(facecolor="#4CAF50", alpha=0.7, label="Decreases Diabetes Risk")]
+plt.legend(handles=legend_elements, loc="lower right", fontsize=10)
+
+plt.tight_layout()
+plt.savefig("plot_6_feature_importance.png", dpi=150, bbox_inches="tight")
+print("    Saved: plot_6_feature_importance.png")
+plt.close()
+
+# ┌─────────────────────────────────────────────────────────┐
+# │  SECTION 10 — SAVE TRAINED MODEL FOR DEPLOYMENT        │
+# └─────────────────────────────────────────────────────────┘
+
+print("\n" + "="*60)
+print("  SAVING TRAINED MODEL")
+print("="*60)
+
+with open("model.pkl", "wb") as f:
+    pickle.dump(model, f)
+
+print(f"\n Model saved!")
+
+
+print("\n" + "="*60)
+print("   MODEL TRAINING COMPLETE!")
+print("="*60)
+print(f"\n Final Results:")
+print(f"   Accuracy     : {accuracy * 100:.2f}%")
+print(f"   ROC-AUC      : {roc_auc:.4f}")
+print(f"   Method       : Logistic Regression")
+print(f"   Training Set : {len(X_train)} samples")
+print(f"   Test Set     : {len(X_test)} samples")
+print("="*60)
